@@ -1,0 +1,26 @@
+Migrate
+0. python manage.py db init
+1. python manage.py db migrate
+2. python manage.py db upgrade
+
+------------------------
+
+source ./venv/bin/activate
+python ./manage.py runserver 
+python ./manage.py shell
+
+(venv)tsungchh:~/workspace/flask_blog $ python manage.py shell
+>>> from author.models import *
+>>> from blog.models import *
+>>> category = Category('Python')
+>>> db.session.add(category)
+>>> db.session.commit()
+
+author = Author.query.first()
+
+-------------------------
+mysql-ctl start
+mysql-ctl cli
+
+---------------------------
+pip install -r requirements.txt 
