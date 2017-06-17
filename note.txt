@@ -3,6 +3,15 @@ Migrate
 1. python manage.py db migrate
 2. python manage.py db upgrade
 
+
+note:
+env.py, change to the following line
+context.configure(connection=connection,
+                      target_metadata=target_metadata,
+                      compare_type=True,
+                      process_revision_directives=process_revision_directives,
+                      **current_app.extensions['migrate'].configure_args)
+
 ------------------------
 
 source ./venv/bin/activate
@@ -24,3 +33,90 @@ mysql-ctl cli
 
 ---------------------------
 pip install -r requirements.txt 
+
+--------------------------
+
+docker run --name db -e MYSQL_ROOT_PASSWORD=test -d  -p 3306:3306 mariadb
+docker images
+docker ps
+docker run --name mysql-client -it --link db:mysql --rm mariadb sh -c 'exec mysql -uroot -ptest -hmysql'
+docker build -t flask_blog .
+docker run -id -p 5000:5000 -v /Users/hsutsungchun/flask_blog:/opt/flask_blog --name blog --link db:mysql flask_blog bash
+docker exec -it blog bash
+docker exec -it db /bin/bash
+
+------------------------
+
+docker db:
+
+export TERM=${TERM:-dumb}
+
+------------------------
+
+1.SSH
+
+ssh root@198.211.116.45
+adduser tsungchh
+gpasswd -a tsungchh sudo
+
+2. Add ssh key 
+
+ssh-keygen to genereate pubkey on local side
+copy id_rsa.pub on local side
+vim .ssh/authorized_keys and paste pub key content on server side
+
+3. Disable root login and login with pwd
+sudo su -
+vi /etc/ssh/sshd_config => and change Authentication section setting
+
+----------------------------------------
+
+Firewall
+
+sudo ufw allow ssh => allow ouside service to access ssh service of your machine
+sudo ufw allow www => allow outside service to access www service(port 80) of your machine
+sudo ufw show added => show added service port of your host
+sudo ufw enable => enable the firwall service
+sudo ufw allow 8000
+
+
+
+sudo apt-get install ntp => make sure time sync with world clock
+
+------------------------------------------
+
+nginx
+
+sudo apt-get install nginx
+
+
+------------------------------------------
+MariaDB
+
+sudo apt-get install mariadb-server libmariadbclient-dev libssl-dev
+sudo mysql_secure_installation => to clean up database
+mysql -uroot -p => to start
+
+-------------------------------------------
+
+Python
+
+sudo apt-get install python-pip python3-dev gcc
+sudo pip install virtualenv
+sudo pip install gunicorn => WSGI servier
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install -r requirements.txt 
+
+
+---------------------------------------
+
+CSGI
+
+gunicorn --bind 0.0.0.0:8000 wsgi:app
+
+
+----------------------------------------
+
+Nginx->proxy web server
+gunicorn ->WSGI application server
