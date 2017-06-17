@@ -45,6 +45,8 @@ docker run -id -p 5000:5000 -v /Users/hsutsungchun/flask_blog:/opt/flask_blog --
 docker exec -it blog bash
 docker exec -it db /bin/bash
 
+usermod -aG docker ${USER}
+
 ------------------------
 
 docker db:
